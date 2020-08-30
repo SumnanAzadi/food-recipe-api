@@ -6,6 +6,7 @@ export default class Search {
   constructor(query) {
     this.query = query;
   }
+  //async function return a promise by default
   async getResults() {
     /* //When we use proxy with key. In here we don't need these.
     const proxy = "https://cors-anywhere.herokuapp.com/";
@@ -18,7 +19,6 @@ export default class Search {
         `https://forkify-api.herokuapp.com/api/search?&q=${this.query}`
       );
       this.result = res.data.recipes;
-      console.log(this.result);
     } catch (error) {
       alert(error);
     }
