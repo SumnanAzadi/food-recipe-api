@@ -2,6 +2,9 @@ import Search from "./models/Search";
 import * as searchView from "./views/searchView";
 import { elements, renderLoader, clearLoader } from "./views/base";
 
+//Recipe
+import Recipe from "./models/Recipe";
+
 /** Global "state" of the app
  * - Search object
  * - Current recipe object
@@ -9,6 +12,10 @@ import { elements, renderLoader, clearLoader } from "./views/base";
  * - Liked recipes
  */
 const state = {};
+
+/*
+ * SEARCH CONTROLLER
+ */
 
 const controlSearch = async () => {
   // 1) Get query from view
@@ -32,6 +39,7 @@ const controlSearch = async () => {
       searchView.renderResults(state.search.result);
     } catch (err) {
       alert("Something wrong with the search...");
+      clearLoader();
     }
   }
 };
@@ -54,3 +62,37 @@ elements.searchResPages.addEventListener("click", (e) => {
     searchView.renderResults(state.search.result, goToPage);
   }
 });
+
+/*
+ * RECIPE CONTROLLER
+ */
+const controlRecipe = async () => {
+  // Get the hash ID from url and replace # with ""
+  const id = window.location.hash.replace("#", "");
+  console.log(id);
+
+  if (id) {
+    // Prepare UI for changes
+
+    // Create new recipe object
+    state.recipe = new Recipe(id);
+
+    try {
+      // Get recipe data and parse ingredients
+      await state.recipe.getRecipe();
+      // Calculate servings and time
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+      // Render recipe
+      console.log(state.recipe);
+    } catch (err) {
+      console.log(err);
+      alert("Error processing recipe!");
+    }
+  }
+};
+//javascript "hashchange" event. when hash value of a url change. it will trigger
+window.addEventListener("hashchange", controlRecipe);
+/* ["hashchange", "load"].forEach((event) =>
+  window.addEventListener(event, controlRecipe)
+); */
