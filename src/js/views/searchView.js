@@ -59,9 +59,65 @@ const renderRecipe = (recipe) => {
   elements.searchResList.insertAdjacentHTML("beforeend", markup);
 };
 
+/* 
 //render the results without pagination
 export const renderResults = (recipes) => {
   recipes.forEach((el) => renderRecipe(el));
   //can be write like below. Here the function will automatically passs the current element.
   //recipes.forEach(renderRecipe);
+}; 
+*/
+
+//render the results with pagination
+
+// type: 'prev' or 'next'
+//html data attribute(goto is the name)
+const createButton = (page, type) => `
+    <button class="btn-inline results__btn--${type}" data-goto=${
+  type === "prev" ? page - 1 : page + 1
+}>
+        <span>Page ${type === "prev" ? page - 1 : page + 1}</span>
+        <svg class="search__icon">
+            <use href="img/icons.svg#icon-triangle-${
+              type === "prev" ? "left" : "right"
+            }"></use>
+        </svg>
+    </button>
+`;
+
+const renderButtons = (page, numResults, resultPerPage) => {
+  const pages = Math.ceil(numResults / resultPerPage);
+
+  let button;
+  if (page === 1 && pages > 1) {
+    // Only show next button to go to next page
+    button = createButton(page, "next");
+  } else if (page < pages) {
+    //Show both buttons
+    button = `
+            ${createButton(page, "prev")}
+            ${createButton(page, "next")}
+        `;
+  } else if (page === pages && pages > 1) {
+    // Only show prev button to go to previous page(this is last page)
+    button = createButton(page, "prev");
+  }
+
+  elements.searchResPages.insertAdjacentHTML("afterbegin", button);
+};
+
+export const renderResults = (recipes, page = 1, resultPerPage = 10) => {
+  // render results of current page
+
+  /* 
+  //so in first page let's say we want to show 10 elements(0 to 9), So, ....
+  const start = 0;
+  const end = 10; */
+  const start = (page - 1) * resultPerPage;
+  const end = page * resultPerPage;
+
+  recipes.slice(start, end).forEach(renderRecipe);
+
+  // render pagination buttons
+  renderButtons(page, recipes.length, resultPerPage);
 };
