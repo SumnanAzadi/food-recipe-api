@@ -6,6 +6,8 @@ export const elements = {
   searchResPages: document.querySelector(".results__pages"),
   recipe: document.querySelector(".recipe"),
   shopping: document.querySelector(".shopping__list"),
+  likesMenu: document.querySelector(".likes__field"),
+  likesList: document.querySelector(".likes__list"),
 };
 
 //we can select loader like we did in "elements" above.Because, when "elements" runs loader is not in the page yet. So, it's can't select that.
