@@ -80,6 +80,7 @@ const controlRecipe = async () => {
     try {
       // Get recipe data and parse ingredients
       await state.recipe.getRecipe();
+      state.recipe.parseIngredients();
       // Calculate servings and time
       state.recipe.calcTime();
       state.recipe.calcServings();
@@ -92,7 +93,11 @@ const controlRecipe = async () => {
   }
 };
 //javascript "hashchange" event. when hash value of a url change. it will trigger
-window.addEventListener("hashchange", controlRecipe);
-/* ["hashchange", "load"].forEach((event) =>
+//window.addEventListener("hashchange", controlRecipe);
+//javascript "load" event. when window loads, it will trigger
+//window.addEventListener("load", controlRecipe);
+
+//add the same event listener to different events
+["hashchange", "load"].forEach((event) =>
   window.addEventListener(event, controlRecipe)
-); */
+);
