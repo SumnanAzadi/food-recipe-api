@@ -4,6 +4,7 @@ import { elements, renderLoader, clearLoader } from "./views/base";
 
 //Recipe
 import Recipe from "./models/Recipe";
+import * as recipeView from "./views/recipeView";
 
 /** Global "state" of the app
  * - Search object
@@ -69,10 +70,15 @@ elements.searchResPages.addEventListener("click", (e) => {
 const controlRecipe = async () => {
   // Get the hash ID from url and replace # with ""
   const id = window.location.hash.replace("#", "");
-  console.log(id);
+  //console.log(id);
 
   if (id) {
     // Prepare UI for changes
+    recipeView.clearRecipe(); //clear the existing recipe from the view first
+    renderLoader(elements.recipe); //render the loader
+
+    // Highlight selected search item
+    if (state.search) recipeView.highlightSelected(id);
 
     // Create new recipe object
     state.recipe = new Recipe(id);
@@ -80,12 +86,18 @@ const controlRecipe = async () => {
     try {
       // Get recipe data and parse ingredients
       await state.recipe.getRecipe();
+
+      //console.log(state.recipe);
       state.recipe.parseIngredients();
+
       // Calculate servings and time
       state.recipe.calcTime();
       state.recipe.calcServings();
+
       // Render recipe
-      console.log(state.recipe);
+      //console.log(state.recipe);
+      clearLoader(); //clear the loader
+      recipeView.renderRecipe(state.recipe);
     } catch (err) {
       console.log(err);
       alert("Error processing recipe!");
